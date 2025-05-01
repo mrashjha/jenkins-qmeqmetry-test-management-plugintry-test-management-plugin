@@ -39,7 +39,9 @@ public class QMetryResultUtil
 
 	onSlave = false;
 	qtmFile = null;
-
+	listener.getLogger().println(pluginName + " : original filePath "+ filePath);
+	listener.getLogger().println(pluginName + " : file path after substring "+ filePath.substring(0,filePath.length()-6));
+	
 	if(filePath.startsWith("/")) 
 	    filePath = filePath.substring(1, filePath.length());
 
@@ -143,6 +145,10 @@ public class QMetryResultUtil
 			    File masterWorkspace = new File(workspace.toString());
 
 			    File absoluteFile = new File(masterWorkspace, filePath);
+			    listener.getLogger().println(pluginName + " : filePath "+ filePath);
+				listener.getLogger().println(pluginName + " : Absolute File "+ absoluteFile);
+				listener.getLogger().println(pluginName + " : masterWorkspace " + masterWorkspace);
+
 			    FilePath resultFilePath = null;
 			    if(automationFramework.equals("QAS") && absoluteFile.isDirectory()) {
 				//Getting latest testresult files for QAS
@@ -180,6 +186,7 @@ public class QMetryResultUtil
 	    String testSuiteName,
 	    String testSName,
 	    String tsFolderPath,
+	    String tcFolderPath,
 	    String automationFramework,
 	    String automationHierarchy,
 	    String buildName,
@@ -218,7 +225,7 @@ public class QMetryResultUtil
 	    if(filepath == null)
 		throw new QMetryException("Results' directory of type "+automationFramework+" not found in given directory '"+resultFile.getAbsolutePath()+"'");
 
-	    conn.uploadFileToTestSuite(filepath, testSuiteName, testSName, tsFolderPath, automationFramework, automationHierarchy, buildName, platformName, project, release, cycle, pluginName, listener, buildnumber, proxyUrl, testCaseField, testSuiteField, skipWarning, isMatchingRequired);
+	    conn.uploadFileToTestSuite(filepath, testSuiteName, testSName, tsFolderPath, tcFolderPath, automationFramework, automationHierarchy, buildName, platformName, project, release, cycle, pluginName, listener, buildnumber, proxyUrl, testCaseField, testSuiteField, skipWarning, isMatchingRequired);
 	}
 	else if (resultFilePath.endsWith("*.xml") || resultFilePath.endsWith("*.json"))
 	{
@@ -230,7 +237,8 @@ public class QMetryResultUtil
 
 	    FileFilter JSON_FILE_FILTER = new FileFilter() {
 		public boolean accept(File file) {
-		    return file.getName().toLowerCase().endsWith(".json");
+			System.out.println("Ashish : FileName" + file.getName().toLowerCase());
+			return file.getName().toLowerCase().endsWith(".json");
 		}
 	    };
 
@@ -249,7 +257,11 @@ public class QMetryResultUtil
 		{
 		    throw new QMetryException("Cannot upload xml files when format is : " + automationFramework);
 		}
+		System.out.println("Ashish : JSON_FILE_FILTER" + JSON_FILE_FILTER.toString());
+		listener.getLogger().println(pluginName + " : resultFile '"+resultFile.toString()+"'");
+
 		filelist = resultFile.listFiles(JSON_FILE_FILTER);
+		listener.getLogger().println(pluginName + " : JSON_FILE_FILTER '"+JSON_FILE_FILTER.toString()+"'");
 	    }
 	    if(filelist == null)
 	    {
@@ -260,7 +272,7 @@ public class QMetryResultUtil
 		for(File f: filelist)
 		{
 		    listener.getLogger().println(pluginName + " : Uploading file : " + f.getAbsolutePath() + "...");
-		    conn.uploadFileToTestSuite(f.getAbsolutePath(), testSuiteName, testSName, tsFolderPath, automationFramework, automationHierarchy, buildName, platformName, project, release, cycle, pluginName, listener, buildnumber, proxyUrl, testCaseField, testSuiteField, skipWarning, isMatchingRequired);
+		    conn.uploadFileToTestSuite(f.getAbsolutePath(), testSuiteName, testSName, tsFolderPath, tcFolderPath, automationFramework, automationHierarchy, buildName, platformName, project, release, cycle, pluginName, listener, buildnumber, proxyUrl, testCaseField, testSuiteField, skipWarning, isMatchingRequired);
 		}
 	    }
 	}
@@ -276,7 +288,7 @@ public class QMetryResultUtil
 		throw new QMetryException("Cannot upload json file when format is " + automationFramework);
 	    }
 	    listener.getLogger().println(pluginName + " : Reading result files from path '"+resultFile.getAbsolutePath()+"'");
-	    conn.uploadFileToTestSuite(rPath, testSuiteName, testSName, tsFolderPath, automationFramework, automationHierarchy, buildName, platformName, project, release, cycle, pluginName, listener, buildnumber, proxyUrl, testCaseField, testSuiteField, skipWarning, isMatchingRequired);
+	    conn.uploadFileToTestSuite(rPath, testSuiteName, testSName, tsFolderPath, tcFolderPath, automationFramework, automationHierarchy, buildName, platformName, project, release, cycle, pluginName, listener, buildnumber, proxyUrl, testCaseField, testSuiteField, skipWarning, isMatchingRequired);
 	}
 	else 
 	{
