@@ -2,7 +2,7 @@ package com.qmetry;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
